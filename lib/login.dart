@@ -145,7 +145,18 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         userName: nameTxtController.text,
                                       ),
                                     ),
-                                  );
+                                  ).then((value) {
+                                    if (value is String && value == "Error") {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          backgroundColor: Colors.redAccent,
+                                          content: Text(
+                                              'Ocorreu um erro ao acessar o chat'),
+                                        ),
+                                      );
+                                    }
+                                  });
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .clearSnackBars();

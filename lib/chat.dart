@@ -53,6 +53,8 @@ class ChatWidgetState extends State<ChatWidget> {
       setState(() {
         visible = true;
       });
+    }).onError((error, stackTrace) {
+      Navigator.pop(context, "Error");
     });
   }
 
