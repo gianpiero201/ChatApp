@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class Message extends StatelessWidget {
   final String name;
   final String message;
+  final bool left;
 
   const Message({
     super.key,
+    required this.left,
     required this.name,
     required this.message,
   });
@@ -13,25 +15,31 @@ class Message extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300,
-      height: 100,
+      margin: EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.transparent,
+        color: const Color.fromARGB(255, 209, 196, 233),
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(0),
-          bottomRight: Radius.circular(16),
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+          bottomLeft:
+              left ? const Radius.circular(0) : const Radius.circular(16),
+          bottomRight:
+              !left ? const Radius.circular(0) : const Radius.circular(16),
+          topLeft: const Radius.circular(16),
+          topRight: const Radius.circular(16),
         ),
         shape: BoxShape.rectangle,
         border: Border.all(
-          width: 2,
-        ),
+            width: 1, color: const Color.fromARGB(255, 209, 196, 233)),
       ),
-      child: Column(
+      child: Row(
         children: [
-          Text(name),
-          Text(message),
+          Expanded(
+            child: Text(
+              (left ? "$name: " : "") + message,
+              softWrap: true,
+              textAlign: left ? TextAlign.start : TextAlign.end,
+            ),
+          ),
         ],
       ),
     );

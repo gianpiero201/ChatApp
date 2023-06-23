@@ -27,13 +27,12 @@ class SignalRHub {
           .build();
 
       hubConnection.onclose(({Exception? error}) => print("Connection Closed"));
-      startHub();
     } catch (ex) {
       print(ex.toString());
     }
   }
 
-  void startHub() async {
+  Future startHub() async {
     await hubConnection.start();
   }
 
@@ -46,7 +45,12 @@ class SignalRHub {
   }
 
   void sendMensagens(String nome, String message) {
-    hubConnection.invoke("SendMessage", args: ["id", nome, message]);
+    if (hubConnection.connectionId == null) {
+      return;
+    }
+
+    hubConnection.invoke("SendMessage",
+        args: [hubConnection.connectionId!, nome, message]);
   }
 }
 
