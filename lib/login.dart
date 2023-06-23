@@ -36,7 +36,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       onTap: () => FocusScope.of(context).requestFocus(unfocusNode),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: const Color.fromARGB(255, 209, 196, 233),
         body: SafeArea(
           top: true,
           child: Column(
@@ -49,7 +49,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                     width: 263,
                     height: 444,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: const Color.fromARGB(255, 231, 209, 232),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Align(
@@ -74,7 +74,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                             alignment: const AlignmentDirectional(0, 0),
                             child: Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(
-                                  16, 60, 16, 0),
+                                16,
+                                60,
+                                16,
+                                0,
+                              ),
                               child: TextFormField(
                                 controller: nameTxtController,
                                 onChanged: (_) => EasyDebounce.debounce(
@@ -92,18 +96,15 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   hintStyle:
                                       Theme.of(context).textTheme.titleMedium,
                                   enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color:
-                                          Theme.of(context).colorScheme.surface,
+                                    borderSide: const BorderSide(
+                                      color: Color.fromARGB(255, 189, 189, 189),
                                       width: 2,
                                     ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                    borderSide: const BorderSide(
+                                      color: Color.fromARGB(255, 209, 196, 233),
                                       width: 2,
                                     ),
                                     borderRadius: BorderRadius.circular(10),
@@ -173,7 +174,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 height: 49,
                                 padding: const EdgeInsetsDirectional.fromSTEB(
                                     24, 0, 24, 0),
-                                color: Theme.of(context).colorScheme.primary,
+                                color: const Color.fromARGB(255, 231, 209, 232),
                                 textStyle:
                                     Theme.of(context).textTheme.bodyMedium!,
                                 elevation: 3,

@@ -1,4 +1,7 @@
 import 'package:chatapp/components/iconbutton2.dart';
+import 'package:chatapp/components/messages.dart';
+import 'package:chatapp/message.dart';
+import 'package:chatapp/services/signalr.dart';
 import 'package:flutter/material.dart';
 
 class ChatWidget extends StatefulWidget {
@@ -7,7 +10,7 @@ class ChatWidget extends StatefulWidget {
     required this.userName,
   }) : super(key: key);
 
-  final String? userName;
+  final String userName;
 
   @override
   ChatWidgetState createState() => ChatWidgetState();
@@ -16,14 +19,29 @@ class ChatWidget extends StatefulWidget {
 class ChatWidgetState extends State<ChatWidget> {
   late final TextEditingController textController;
   final unfocusNode = FocusNode();
+  late final SignalRHub hub;
+
+  late final List<MessageModel> messages = [];
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-
+    hub = SignalRHub(widget.userName);
     textController = TextEditingController();
+    hub.getMessages(
+      (p0) {
+        setState(() {
+          messages.add(
+            MessageModel(
+              nome: p0![2].toString(),
+              message: p0![3].toString(),
+            ),
+          );
+        });
+      },
+    );
   }
 
   @override
@@ -32,22 +50,23 @@ class ChatWidgetState extends State<ChatWidget> {
       onTap: () => FocusScope.of(context).requestFocus(unfocusNode),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: const Color.fromARGB(255, 231, 209, 232),
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.secondary,
+          backgroundColor: const Color.fromARGB(255, 209, 196, 233),
           automaticallyImplyLeading: false,
           leading: IconButton2(
             borderColor: const Color(0x00E7D1E8),
             borderRadius: 20,
             buttonSize: 32,
             fillColor: const Color(0x00E7D1E8),
-            icon: Icon(
+            icon: const Icon(
               Icons.keyboard_arrow_left,
-              color: Theme.of(context).textTheme.bodyMedium!.color,
+              color: Colors.black,
               size: 32,
             ),
             onPressed: () {
-              print('IconButton pressed ...');
+              hub.hubConnection.stop();
+              Navigator.pop(context);
             },
           ),
           title: Align(
@@ -55,7 +74,7 @@ class ChatWidgetState extends State<ChatWidget> {
             child: Text(
               widget.userName!,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: const TextStyle(color: Colors.black),
             ),
           ),
           actions: [
@@ -79,18 +98,24 @@ class ChatWidgetState extends State<ChatWidget> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 1,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
+                color: const Color.fromARGB(255, 231, 209, 232),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Expanded(
-                    child: ListView(
+                    child: ListView.builder(
+                      itemCount: messages.length,
                       padding: EdgeInsets.zero,
                       reverse: true,
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
-                      children: [],
+                      itemBuilder: (buildContext, int) {
+                        Message(
+                          message: messages[int].message,
+                          name: messages[int].nome,
+                        );
+                      },
                     ),
                   ),
                   Row(
@@ -106,58 +131,56 @@ class ChatWidgetState extends State<ChatWidget> {
                             obscureText: false,
                             decoration: InputDecoration(
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .color!,
+                                borderSide: const BorderSide(
+                                  color: Colors.black,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
+                                borderSide: const BorderSide(
+                                  color: Color.fromARGB(255, 209, 196, 233),
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.error,
+                                borderSide: const BorderSide(
+                                  color: Color.fromARGB(255, 255, 89, 99),
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.error,
+                                borderSide: const BorderSide(
+                                  color: Color.fromARGB(255, 255, 89, 99),
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
                       ),
                       Align(
                         alignment: const AlignmentDirectional(0, 0),
                         child: IconButton2(
-                          borderColor:
-                              Theme.of(context).textTheme.bodyMedium!.color!,
+                          borderColor: Colors.black,
                           borderRadius: 28,
                           borderWidth: 1,
                           buttonSize: 40,
-                          fillColor: Theme.of(context).colorScheme.primary,
-                          icon: Icon(
+                          fillColor: const Color.fromARGB(255, 231, 209, 232),
+                          icon: const Icon(
                             Icons.send,
-                            color:
-                                Theme.of(context).textTheme.bodyMedium!.color!,
+                            color: Colors.black,
                             size: 24,
                           ),
                           onPressed: () {
-                            print('IconButton pressed ...');
+                            hub.sendMensagens(
+                              widget.userName,
+                              textController.text,
+                            );
                           },
                         ),
                       ),
